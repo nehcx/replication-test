@@ -13,14 +13,14 @@ RUN apt-get -y update && \
 
 # Code
 RUN git clone -b main --depth=1 --recursive https://github.com/nehcx/replication-test
-# RUN mkdir lex-change
-# COPY ./ /opt/app/lex-change
+# RUN mkdir replication-test
+# COPY ./ /opt/app/replication-test
 
 # Python dependencies
-RUN pip install -r lex-change/requirements.lock
+RUN pip install -r replication-test/requirements.lock
 
 # R dependencies
 RUN R -e "install.packages(c('tidyverse', 'ggplot2'), repos = 'http://cran.us.r-project.org')"
 
 # Data
-RUN wget -c https://raw.githubusercontent.com/nehcx/hachidaishu/main/hachidai.db -O lex-change/data/hachidai.db
+RUN wget -c https://raw.githubusercontent.com/nehcx/hachidaishu/main/hachidai.db -O replication-test/data/hachidai.db

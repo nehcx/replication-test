@@ -3,7 +3,7 @@ Replication requires [[https://docs.docker.com/get-docker/][Docker]].
 
 #+BEGIN_SRC sh
   git clone https://github.com/nehcx/replication-test.git
-  cd lex-change
+  cd replication-test
   docker build --no-cache -t nehcx/replication-test .
   docker run -it --rm nehcx/replication-test bash
 #+END_SRC
@@ -11,11 +11,12 @@ Replication requires [[https://docs.docker.com/get-docker/][Docker]].
 In docker bash, run the following:
 
 #+BEGIN_SRC sh
-  cd lex-change
+  cd replication-test
   make preprocess
   make feature  # select words as context feature
   # make hyparam  # uncomment this if you want to train hyperparameters
   make search  # search lexical varibles
+  make stat  # statistic analysis
 #+END_SRC
 
 In another bash session, run:
@@ -27,7 +28,7 @@ In another bash session, run:
 Copy artifact to local path:
 
 #+BEGIN_SRC sh
-  docker cp <CONTAINER ID>:/opt/app/lex-change/artifact/* artifact/
+  docker cp <CONTAINER ID>:/opt/app/replication-test/artifact/* artifact/
 #+END_SRC
 
 Enter docker bash, exit:
