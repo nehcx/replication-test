@@ -1,0 +1,187 @@
+* Descriptive statistics
+:PROPERTIES:
+:header-args:R: :tangle stat.r :comments org
+:exports:  results
+:END:
+
+#+BEGIN_SRC emacs-lisp :results none
+  ;; Set work dir.
+  (directory-files ".")
+#+END_SRC
+
+#+BEGIN_SRC R :results none
+  # dependencies
+  library(svglite)
+  library(ggplot2)
+  library(ggpubr)
+  library(tidyverse)
+  library(showtext)
+  font_add_google("M PLUS Rounded 1c", "ja")
+  showtext_auto()
+#+END_SRC
+
+** Hyperparameter searching
+:PROPERTIES:
+:header-args:R: :tangle no
+:END:
+
+Show the hyperparameter effect to the matching results.
+#+NAME: load hyperparameter searching log
+#+BEGIN_SRC R
+  df.log <- read_csv("../example/log.csv")
+  head(df.log)
+#+END_SRC
+
+#+RESULTS[51cf12da1594af4f857810662ac19e44becff9b4]: load hyperparameter searching log
+|   | ...1 | number | pos_match_num | group_match_num | field_match_num |     pos_match_per |    group_match_per |    field_match_per | datetime_start      | datetime_complete   | duration               | alpha | beta | gamma |   k | only_content_feature | top_n_feature | top_n_target | window_size | state    |
+|---+------+--------+---------------+-----------------+-----------------+-------------------+--------------------+--------------------+---------------------+---------------------+------------------------+-------+------+-------+-----+----------------------+---------------+--------------+-------------+----------|
+| 1 |    0 |      0 |           786 |             141 |              96 | 0.520874751491054 | 0.0934393638170974 | 0.0636182902584493 | 2022-08-03 02:50:15 | 2022-08-03 02:58:06 | 0 days 00:07:50.711677 |   0.4 |  0.8 |   0.6 | 100 | TRUE                 |          3000 |         1000 |           3 | COMPLETE |
+| 2 |    1 |      1 |             8 |               4 |               4 | 0.380952380952381 |   0.19047619047619 |   0.19047619047619 | 2022-08-03 02:58:06 | 2022-08-03 02:59:50 | 0 days 00:01:44.545924 |   0.2 |  0.6 |   0.6 | 100 | TRUE                 |          3000 |          500 |           2 | COMPLETE |
+| 3 |    2 |      2 |          1895 |             226 |             130 | 0.499341238471673 | 0.0595520421607378 | 0.0342555994729908 | 2022-08-03 02:59:50 | 2022-08-03 03:33:15 | 0 days 00:33:25.190975 |   0.6 |  0.8 |   0.4 | 100 | FALSE                |          3000 |         1000 |           2 | COMPLETE |
+| 4 |    3 |      3 |           442 |              59 |              42 | 0.482532751091703 |  0.064410480349345 | 0.0458515283842795 | 2022-08-03 03:33:15 | 2022-08-03 03:36:09 | 0 days 00:02:53.264880 |   0.4 |  0.4 |   0.4 | 100 | FALSE                |          2000 |          500 |           3 | COMPLETE |
+| 5 |    4 |      4 |           349 |              43 |              18 | 0.363163371488033 | 0.0447450572320499 | 0.0187304890738814 | 2022-08-03 03:36:09 | 2022-08-03 03:39:06 | 0 days 00:02:56.923659 |   0.6 |  0.8 |   0.4 | 100 | TRUE                 |          2000 |          500 |           2 | COMPLETE |
+| 6 |    5 |      5 |            22 |               7 |               7 | 0.385964912280702 |   0.12280701754386 |   0.12280701754386 | 2022-08-03 03:39:06 | 2022-08-03 03:42:55 | 0 days 00:03:49.215930 |   0.2 |  0.6 |   0.6 | 100 | FALSE                |          2000 |         1000 |           3 | COMPLETE |
+
+
+#+NAME: visualize log
+#+header: :width 20 :height 6.5 
+#+BEGIN_SRC R :results output graphics file :file ../example/fig/hyparam.svg
+    gg1 = df.log %>% filter(gamma==0.2) %>%
+    ggplot(aes(group_match_num, group_match_per)) +
+    stat_density_2d_filled(aes(fill = stat(nlevel)), 
+                    geom = "polygon",
+                    n = 50,bins = 100,contour = TRUE) +
+    facet_grid(alpha~beta, labeller=label_both) +
+    scale_fill_viridis_c(option = "A")  +
+    # ggtitle("gamma = 0.2") +
+    theme_bw() +
+    theme(title = element_text(size=20),
+          text = element_text(size=20),
+          axis.text.x = element_text(angle = -90, vjust = 0.5),
+          strip.background = element_rect( colour = "white", fill = "white"), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.line = element_blank()) +
+    ylab("Percentage of group match") + xlab("# of group match")
+
+  gg2 = df.log %>% filter(gamma==0.4) %>%
+    ggplot(aes(group_match_num, group_match_per)) +
+    stat_density_2d_filled(aes(fill = stat(nlevel)), 
+                    geom = "polygon",
+                    n = 50,bins = 100,contour = TRUE) +
+    facet_grid(alpha~beta, labeller=label_both) +
+    scale_fill_viridis_c(option = "A")  +  theme_bw() +
+    theme(title = element_text(size=20),
+          text = element_text(size=20),
+          axis.text.x = element_text(angle = -90, vjust = 0.5),
+          strip.background = element_rect( colour = "white", fill = "white"), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.line = element_blank()) +
+    ylab("Percentage of group match") + xlab("# of group match")
+
+  gg3 = df.log %>% filter(gamma==0.6) %>%
+    ggplot(aes(group_match_num, group_match_per)) +
+    stat_density_2d_filled(aes(fill = stat(nlevel)), 
+                    geom = "polygon",
+                    n = 50,bins = 100,contour = TRUE) +
+    facet_grid(alpha~beta, labeller=label_both) +
+    scale_fill_viridis_c(option = "A")  +  
+    theme_bw() +
+    theme(title = element_text(size=20),
+          text = element_text(size=20),
+          axis.text.x = element_text(angle = -90, vjust = 0.5),
+          strip.background = element_rect( colour = "white", fill = "white"), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.line = element_blank()) +
+    ylab("Percentage of group match") + xlab("# of group match")
+
+  ff <- ggarrange(gg1+xlab("") ,gg2+ylab(""),gg3+ylab("")+xlab(""),ncol=3,nrow=1,
+                  labels=c("gamma = 0.2","gamma = 0.4","gamma = 0.6"),
+                  common.legend = TRUE, 
+                  legend = "right", 
+                  vjust=0,
+                  align = "hv", 
+                  font.label = list(size = 14, face = "italic", color ="red")) +
+    theme(plot.margin = margin(t = 20, unit = "pt"))
+
+  ff %>% ggsave(file="../artifact/fig/hyparam.svg", width=20, height=6.5)
+  ff
+#+END_SRC
+
+#+RESULTS[91feed25e7d1912c9e61bfa8582e9047d2c890e7]: visualize log
+[[file:../example/fig/hyparam.svg]]
+
+** External uniformity value
+
+Visulize external uniformity value (\(U\)) of the selected examples.
+#+NAME: load external uniformity value data
+#+BEGIN_SRC R
+  df.ex <- read.csv("../data/ex_valued.csv")
+  df.ex$lemma <- factor(df.ex$lemma, levels = df.ex$lemma)
+  df.ex$bg_id <- factor(df.ex$bg_id, levels = df.ex$bg_id)
+  head(df.ex)
+#+END_SRC
+
+#+RESULTS[9be2a3530b7d61d984f2223049b5d5997efcc3f5]: load external uniformity value data
+|   |  X | bg_id                                        |      avg_sim | lemma              | rdg                          | num | pos_match | group_match | field_match | annotation | Unnamed..9            | period_a_dist  | period_b_dist  | external_uniformity |
+|---+----+----------------------------------------------+--------------+--------------------+------------------------------+-----+-----------+-------------+-------------+------------+-----------------------+----------------+----------------+---------------------|
+| 1 | 16 | ('BG-01-5510-08-0900', 'BG-01-5510-08-1000') | 0.4645453251 | ('葎', '八重葎')   | ('むぐら', 'やへむぐら')     |   2 | True      | True        | True        |          1 |                       | (0.0, 1.0)     | (0.625, 0.375) |               0.375 |
+| 2 |  6 | ('CH-26-0000-00-0701', 'CH-26-5240-05-0801') | 0.3168492511 | ('大原', '大原山') | ('おほはら', 'おほはらやま') |   2 | True      | False       | False       |          1 |                       | (1.0, 0.0)     | (0.455, 0.545) |   0.454545454545455 |
+| 3 | 14 | ('BG-01-4420-04-1100', 'CH-29-0000-00-1300') | 0.3692124684 | ('神垣', '神奈備') | ('かみがき', 'かむなび')     |   2 | False     | False       | False       |          3 | 神奈備/神垣の三室の山 | (0.1, 0.9)     | (0.5, 0.5)     |                 0.6 |
+| 4 |  8 | ('BG-01-1730-02-0300', 'BG-01-1730-03-0300') | 0.3239619935 | ('此方', '彼方')   | ('こなた', 'あなた')         |   2 | True      | True        | False       |          1 |                       | (0.438, 0.562) | (0.143, 0.857) |   0.705357142857143 |
+| 5 | 18 | ('BG-01-2120-01-0100', 'BG-01-2120-02-2601') | 0.5348400379 | ('親', '垂乳根')   | ('おや', 'たらちね')         |   2 | True      | True        | False       |          1 | 枕詞                  | (0.7, 0.3)     | (0.429, 0.571) |   0.728571428571429 |
+| 6 | 15 | ('BG-01-5620-01-0601', 'BG-01-5620-04-0703') | 0.4587191201 | ('水鳥', '葦鴨')   | ('みづとり', 'あしがも')     |   2 | True      | True        | False       |          1 |                       | (0.5, 0.5)     | (0.75, 0.25)   |                0.75 |
+
+#+NAME: visualize external uniformity value
+#+headers: :width 15 :height 7
+#+BEGIN_SRC R :results output graphics file :file ../example/fig/ex_value.svg
+  ff <- df.ex %>% 
+    ggplot(aes(as.numeric(lemma), external_uniformity)) + 
+    geom_bar(stat='identity') +
+    ggtitle("") +
+    theme_classic() +
+    theme(title = element_text(size=20),
+          text = element_text(size=20),
+          axis.text.x = element_text(angle = -90, vjust = 0.5),
+          strip.background = element_rect( colour = "white", fill = "white"), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.line = element_blank(),
+          axis.line.y = element_line()) +
+    ylab("External uniformity value (U)") + xlab("Lexical variable") +
+    geom_hline(yintercept = mean(df.ex$external_uniformity),
+               linetype = 'dashed',
+               color = 'red') +
+    scale_x_continuous(breaks = 1:length(df.ex$lemma),
+                       labels = df.ex$lemma,
+                       sec.axis = sec_axis(~.,
+                                           breaks = 1:length(df.ex$lemma),
+                                           labels = df.ex$bg_id)) +
+    scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1.0)) +
+    coord_flip(ylim = c(0, 1.5)) +
+    annotate(geom = 'text',
+             x = 1:19,
+             y = 0.02,
+             hjust = 'left',
+             color = 'white',
+             label = round(df.ex$external_uniformity, 3)) +
+
+    annotate(geom = 'text',
+             x = 1:19,
+             y = df.ex$external_uniformity + 0.05,
+             hjust = 'left',
+             label = paste(df.ex$period_a_dist,rep('→',19),df.ex$period_b_dist))
+
+  ff %>% ggsave(filename = "../artifact/fig/ex_value.svg", width=15, height=7)
+  ff
+#+END_SRC
+
+#+RESULTS[ba9b77ccfe4cf579759a61a1e730dbde4f3f5484]: visualize external uniformity value
+[[file:../example/fig/ex_value.svg]]
+
+
+
+
+

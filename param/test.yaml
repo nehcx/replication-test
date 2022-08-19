@@ -1,0 +1,12 @@
+corpus_f: "../data/parsed_hd.csv"
+context_f: "../cache/id2change.json"
+id2lemma_f: "../data/id2lemma.json"
+top_n_feature: 3000
+top_n_target: 10
+only_content_feature: False
+window_size: 2
+k: 100
+alpha: 0.5
+beta: 0.8
+gamma: 0.6
+

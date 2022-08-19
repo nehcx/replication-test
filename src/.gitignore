@@ -1,0 +1,7 @@
+*.html
+*.tex
+*.bbl
+*.pdf
+*.dvi
+_minted-stat/
+.Rhistory

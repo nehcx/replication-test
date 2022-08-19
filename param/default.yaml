@@ -1,0 +1,6 @@
+corpus_f: "../data/parsed_hd.csv"
+context_f: "../cache/id2change.json"
+id2lemma_f: "../data/id2lemma.json"
+n_trials: 108
+timeout: 21600
+metrics: "group_match_per"

@@ -1,0 +1,58 @@
+** Replication
+Replication requires [[https://docs.docker.com/get-docker/][Docker]].
+
+#+BEGIN_SRC sh
+  git clone https://github.com/nehcx/replication-test.git
+  cd lex-change
+  docker build --no-cache -t nehcx/replication-test .
+  docker run -it --rm nehcx/replication-test bash
+#+END_SRC
+
+In docker bash, run the following:
+
+#+BEGIN_SRC sh
+  cd lex-change
+  make preprocess
+  make feature  # select words as context feature
+  # make hyparam  # uncomment this if you want to train hyperparameters
+  make search  # search lexical varibles
+#+END_SRC
+
+In another bash session, run:
+
+#+BEGIN_SRC sh
+  docker ps
+#+END_SRC
+
+Copy artifact to local path:
+
+#+BEGIN_SRC sh
+  docker cp <CONTAINER ID>:/opt/app/lex-change/artifact/* artifact/
+#+END_SRC
+
+Enter docker bash, exit:
+
+#+BEGIN_SRC sh
+  exit
+#+END_SRC
+
+** References
+- /Hachidaishu/ vocabulary dataset:\\
+  #+begin_quote
+  Yamamoto, H., & Hodošček, B. (2021). Hachidaishu vocabulary dataset
+  [Data set]. [[[https://doi.org/10.5281/zenodo.4744170q][Zenodo]]] [[[https://github.com/yamagen/hachidaishu][github]]]
+  #+end_quote
+- =sppmi-svd= for detecting static word types through Hachidaishu as
+  context features:\\
+  #+begin_quote
+  Aida, T., Komachi, M., Ogiso, T., Takamura, H., & Mochihashi,
+  D. (2021). A Comprehensive Analysis of PMI-based Models for
+  Measuring Semantic Differences. Proceedings of the 35th Pacific Asia
+  Conference on Language, Information and Computation, 21–31. [[[https://github.com/a1da4/pmi-semantic-difference][Codes]]]
+  #+end_quote
+- Lexical variable detection in the classic Japanese poetic langage:\\
+  #+begin_quote
+  De Pascale, S. (2019). Token-based vector space models as semantic
+  control in lexical sociolectometry [PhD dissertation, KU Leuven].
+  #+end_quote
+  

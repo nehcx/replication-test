@@ -1,0 +1,9 @@
+pandas==1.4.3
+numpy==1.23.1
+tqdm==4.64.0
+scipy==1.9.0
+scikit-learn==1.0.2
+hydra-core==1.2.0
+optuna==2.10.1
+omegaconf==2.2.2
+mlflow==1.27.0

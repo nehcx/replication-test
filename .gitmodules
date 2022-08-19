@@ -1,0 +1,3 @@
+[submodule "sppmi-svd"]
+	path = src/sppmi-svd
+	url = https://github.com/nehcx/sppmi-svd.git

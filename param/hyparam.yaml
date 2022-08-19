@@ -1,0 +1,8 @@
+alpha: 0.4
+beta: 0.8
+gamma: 0.4
+k: 100
+only_content_feature: false
+top_n_feature: 3000
+top_n_target: 1500
+window_size: 2
