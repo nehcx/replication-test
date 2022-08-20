@@ -1,6 +1,6 @@
 * Descriptive statistics
 :PROPERTIES:
-:header-args:R: :tangle stat.r :comments org
+:header-args:R: :tangle stat.R :comments org
 :exports:  results
 :END:
 
