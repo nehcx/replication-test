@@ -69,5 +69,5 @@ ff <- df.ex %>%
            hjust = 'left',
            label = paste(df.ex$period_a_dist,rep('→',19),df.ex$period_b_dist))
 
-ff %>% ggsave(filename = "../artifact/fig/ex_value.svg", width=15, height=7)
+ff %>% ggsave(filename = "../artifact/ex_value.svg", width=15, height=7)
 ff
