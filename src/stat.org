@@ -118,7 +118,7 @@ Show the hyperparameter effect to the matching results.
 Visulize external uniformity value (\(U\)) of the selected examples.
 #+NAME: load external uniformity value data
 #+BEGIN_SRC R
-  df.ex <- read.csv("../data/ex_valued.csv")
+  df.ex <- read.csv("../artifact/ex_valued.csv")
   df.ex$lemma <- factor(df.ex$lemma, levels = df.ex$lemma)
   df.ex$bg_id <- factor(df.ex$bg_id, levels = df.ex$bg_id)
   head(df.ex)
