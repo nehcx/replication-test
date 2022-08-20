@@ -29,7 +29,7 @@ In another bash session, run:
 Copy artifact to local path:
 
 #+BEGIN_SRC sh
-  docker cp <CONTAINER ID>:/opt/app/replication-test/artifact/* artifact/
+  docker cp <CONTAINER ID>:/opt/app/replication-test/artifact/. artifact/
 #+END_SRC
 
 Enter docker bash, exit:
