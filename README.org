@@ -16,6 +16,7 @@ In docker bash, run the following:
   make feature  # select words as context feature
   # make hyparam  # uncomment this if you want to train hyperparameters
   make search  # search lexical varibles
+  make ex_value  # compute external uniformity value
   make stat  # statistic analysis
 #+END_SRC
 
