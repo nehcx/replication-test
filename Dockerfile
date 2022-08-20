@@ -20,7 +20,7 @@ RUN git clone -b main --depth=1 --recursive https://github.com/nehcx/replication
 RUN pip install -r replication-test/requirements.lock
 
 # R dependencies
-RUN R -e "install.packages(c('tidyverse', 'ggplot2'), repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages(c('tidyverse', 'ggplot2', 'svglite'), repos = 'http://cran.us.r-project.org')"
 
 # Data
 RUN wget -c https://raw.githubusercontent.com/nehcx/hachidaishu/main/hachidai.db -O replication-test/data/hachidai.db
