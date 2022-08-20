@@ -8,8 +8,8 @@ WORKDIR /opt/app
 RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install --no-install-recommends -yq ssh git curl apt-utils && \
-    apt-get install -yq gcc g++ && \
-    apt-get install -y r-base
+    apt-get install -yq gcc g++ cmake && \
+    apt-get install -y r-base r-cran-rcppeigen
 
 # Code
 RUN git clone -b main --depth=1 --recursive https://github.com/nehcx/replication-test
